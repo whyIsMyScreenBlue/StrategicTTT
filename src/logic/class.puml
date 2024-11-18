@@ -1,0 +1,16 @@
+@startuml
+interface Winnable
+interface Tileable
+abstract AbstractBoard
+class Board
+class SubBoard
+class Cell
+Winnable <|-- Tileable
+Tileable <|.. SubBoard
+Tileable <|.. Cell
+Winnable <|.. AbstractBoard
+AbstractBoard <|-- Board
+AbstractBoard <|-- SubBoard
+Board o-> SubBoard
+SubBoard o-> Cell
+@enduml
