@@ -3,8 +3,9 @@ package ai;
 import java.util.List;
 import java.util.Random;
 
-public class MonteCarloNode {
+public class MonteCarloNode extends Node<MonteCarloNode> {
     public static final Random RNG = new Random();
+    public static final long PLAYOFF_COUNT = 10000;
 
     private final FastGameState gs;
     private List<Integer> options;
@@ -12,9 +13,16 @@ public class MonteCarloNode {
     private long playoffs;
 
     public MonteCarloNode(FastGameState gs) {
-        this.gs = gs;
+        super(gs);
+        this.gs = new FastGameState(gs);
     }
 
+    @Override
+    public MonteCarloNode createSubNode(FastGameState gs) {
+        return new MonteCarloNode(gs);
+    }
+
+    // Performance critical
     public void doPlayOffs(long n) {
         for (long i = 0; i < n; i++) {
             playoffs += 1;
@@ -35,7 +43,9 @@ public class MonteCarloNode {
         }
     }
 
+    @Override
     public double eval() {
+        doPlayOffs(PLAYOFF_COUNT);
         return score / playoffs;
     }
 }
