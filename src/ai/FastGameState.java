@@ -23,6 +23,7 @@ public class FastGameState {
     }
 
     public FastGameState(FastGameState other) {
+        this.won = other.won;
         this.mainBitBoard = other.mainBitBoard;
         this.sectorBitBoards = Arrays.copyOf(other.sectorBitBoards, 9);
         this.currentPlayer = other.currentPlayer;
