@@ -21,7 +21,8 @@ public final class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        JPanel gridPanel = new JPanel(new GridLayout(9, 9));
+        // Create the main grid panel with a grid layout
+        JPanel gridPanel = new JPanel(new GridLayout(3, 3)); // 3x3 grid for the subgrids (3x3 buttons per subgrid)
         JButton[][] buttons = new JButton[9][9];
 
         JLabel playerLabel = new JLabel("Current Player:");
@@ -32,16 +33,31 @@ public final class Main {
         JTextField sectorField = new JTextField("Any");
         sectorField.setEditable(false);
 
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                buttons[row][col] = new JButton("");
-                buttons[row][col].setFont(new Font("Arial", Font.BOLD, 20));
-                buttons[row][col].addActionListener(initButton(27*(row/3) + 9*(col/3) + 3*(row%3) + col%3,
-                        playerField, sectorField, buttons));
-                gridPanel.add(buttons[row][col]);
+        // Create 9 subgrid panels (each 3x3 grid of buttons)
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                JPanel subgridPanel = new JPanel(new GridLayout(3, 3)); // 3x3 grid for buttons inside each subgrid
+                subgridPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5)); // Thicker border between subgrids
+
+                // Add buttons inside each subgrid
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        int buttonRow = row * 3 + i;
+                        int buttonCol = col * 3 + j;
+                        buttons[buttonRow][buttonCol] = new JButton("");
+                        buttons[buttonRow][buttonCol].setFont(new Font("Arial", Font.BOLD, 20));
+                        buttons[buttonRow][buttonCol].addActionListener(initButton(27*(buttonRow/3) + 9*(buttonCol/3) + 3*(buttonRow%3) + buttonCol%3,
+                                playerField, sectorField, buttons));
+                        subgridPanel.add(buttons[buttonRow][buttonCol]);
+                    }
+                }
+
+                // Add the subgrid panel to the main grid panel
+                gridPanel.add(subgridPanel);
             }
         }
 
+        // Side panel for player information
         JPanel sidePanel = new JPanel();
         sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
 
@@ -90,9 +106,9 @@ public final class Main {
         if (aiType.equals("MCTS")) {
             MonteCarloNode node = new MonteCarloNode(gs);
             int coords = node.bestMove();
-            int sectorCoords = coords/9;
-            int cellCoords = coords%9;
-            buttons[3*(sectorCoords/3) + cellCoords/3][3*(sectorCoords%3) + cellCoords%3].setText(new String[] {"X", "O"} [gs.getCurrentPlayer()]);
+            int sectorCoords = coords / 9;
+            int cellCoords = coords % 9;
+            buttons[3 * (sectorCoords / 3) + cellCoords / 3][3 * (sectorCoords % 3) + cellCoords % 3].setText(new String[] {"X", "O"} [gs.getCurrentPlayer()]);
             gs.play(coords);
             System.out.println(gs);
         }
