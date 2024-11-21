@@ -110,6 +110,7 @@ public final class Main {
     }
 
     private static void optionalAIMove(String aiType, JButton[][] buttons) {
+        if (gs.isWon()) return;
         if (aiType.equals("MCTS")) {
             MonteCarloNode node = new MonteCarloNode(gs);
             int coords = node.bestMove();
